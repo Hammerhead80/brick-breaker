@@ -3,6 +3,8 @@ namespace SpriteKind {
     export const Ball = SpriteKind.create()
     export const Top = SpriteKind.create()
     export const Brick = SpriteKind.create()
+    export const longBoi = SpriteKind.create()
+    export const heartBrick = SpriteKind.create()
 }
 sprites.onOverlap(SpriteKind.Ball, SpriteKind.Brick, function (sprite, otherSprite) {
     otherSprite.destroy(effects.fire, 500)
@@ -10,11 +12,41 @@ sprites.onOverlap(SpriteKind.Ball, SpriteKind.Brick, function (sprite, otherSpri
     info.changeScoreBy(15)
     numBricks += -1
 })
+sprites.onOverlap(SpriteKind.Ball, SpriteKind.heartBrick, function (sprite, otherSprite) {
+    otherSprite.destroy(effects.fire, 500)
+    sprite.setVelocity(sprite.vx, -1 * sprite.vy)
+    info.changeScoreBy(15)
+    numBricks += -1
+    if (info.life() >= 3) {
+        info.changeScoreBy(100)
+    } else {
+        info.changeLifeBy(1)
+    }
+})
 sprites.onOverlap(SpriteKind.Ball, SpriteKind.Player, function (sprite, otherSprite) {
     sprite.setVelocity((sprite.x - otherSprite.x) * 0, -1 * sprite.vy)
     if (sprite.vy >= -150) {
         sprite.vx += -5
     }
+})
+sprites.onOverlap(SpriteKind.Ball, SpriteKind.longBoi, function (sprite, otherSprite) {
+    otherSprite.destroy(effects.fire, 500)
+    sprite.setVelocity(sprite.vx, -1 * sprite.vy)
+    info.changeScoreBy(15)
+    numBricks += -1
+    Pallet.setImage(img`
+7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
+7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
+7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
+7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
+`)
+    pause(1000)
+    Pallet.setImage(img`
+7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
+7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
+7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
+7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
+`)
 })
 sprites.onOverlap(SpriteKind.Ball, SpriteKind.Edge, function (sprite, otherSprite) {
     sprite.setVelocity(-1 * sprite.vx, sprite.vy)
@@ -35,8 +67,8 @@ function buildSetBricks () {
     }
 }
 function createBrick (x: number, y: number) {
-    randNum = Math.randomRange(0, 2)
-    if (randNum == 0) {
+    randNum = Math.randomRange(1, 100)
+    if (randNum <= 30) {
         Brick2 = sprites.create(img`
 f f f f f f f f f f f f f f f f 
 f 2 2 2 2 2 2 2 2 2 2 2 2 2 2 f 
@@ -47,7 +79,7 @@ f 2 2 2 2 2 2 2 2 2 2 2 2 2 2 f
 f 2 2 2 2 2 2 2 2 2 2 2 2 2 2 f 
 f f f f f f f f f f f f f f f f 
 `, SpriteKind.Brick)
-    } else if (randNum == 1) {
+    } else if (randNum <= 60) {
         Brick2 = sprites.create(img`
 f f f f f f f f f f f f f f f f 
 f 5 5 5 5 5 5 5 5 5 5 5 5 5 5 f 
@@ -58,17 +90,39 @@ f 5 5 5 5 5 5 5 5 5 5 5 5 5 5 f
 f 5 5 5 5 5 5 5 5 5 5 5 5 5 5 f 
 f f f f f f f f f f f f f f f f 
 `, SpriteKind.Brick)
+    } else if (randNum <= 90) {
+        Brick2 = sprites.create(img`
+f f f f f f f f f f f f f f f f 
+f a a a a a a a a a a a a a a f 
+f a a a a a a a a a a a a a a f 
+f a a a a a a a a a a a a a a f 
+f a a a a a a a a a a a a a a f 
+f a a a a a a a a a a a a a a f 
+f a a a a a a a a a a a a a a f 
+f f f f f f f f f f f f f f f f 
+`, SpriteKind.Brick)
+    } else if (randNum <= 93) {
+        Brick2 = sprites.create(img`
+f f f f f f f f f f f f f f f f 
+f 1 1 1 1 2 2 1 2 2 1 1 1 1 1 f 
+f 1 1 1 2 2 2 2 2 2 2 1 1 1 1 f 
+f 1 1 1 1 2 2 2 2 2 1 1 1 1 1 f 
+f 1 1 1 1 2 2 2 2 2 1 1 1 1 1 f 
+f 1 1 1 1 1 2 2 2 1 1 1 1 1 1 f 
+f 1 1 1 1 1 1 2 1 1 1 1 1 1 1 f 
+f f f f f f f f f f f f f f f f 
+`, SpriteKind.heartBrick)
     } else {
         Brick2 = sprites.create(img`
 f f f f f f f f f f f f f f f f 
-f a a a a a a a a a a a a a a f 
-f a a a a a a a a a a a a a a f 
-f a a a a a a a a a a a a a a f 
-f a a a a a a a a a a a a a a f 
-f a a a a a a a a a a a a a a f 
-f a a a a a a a a a a a a a a f 
+f a a 1 a a a a a a a a 1 a a f 
+f a 1 1 a a a a a a a a 1 1 a f 
+f 1 1 1 1 1 1 1 1 1 1 1 1 1 1 f 
+f 1 1 1 1 1 1 1 1 1 1 1 1 1 1 f 
+f a 1 1 a a a a a a a a 1 1 a f 
+f a a 1 a a a a a a a a 1 a a f 
 f f f f f f f f f f f f f f f f 
-`, SpriteKind.Brick)
+`, SpriteKind.longBoi)
     }
     Brick2.setPosition(x, y)
     numBricks += 1
@@ -76,11 +130,12 @@ f f f f f f f f f f f f f f f f
 let Brick2: Sprite = null
 let randNum = 0
 let numBricks = 0
+let Pallet: Sprite = null
 let Column = 0
 Column = 0
 let startBallVar = 0
 scene.setBackgroundColor(4)
-let Pallet = sprites.create(img`
+Pallet = sprites.create(img`
 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 7 
